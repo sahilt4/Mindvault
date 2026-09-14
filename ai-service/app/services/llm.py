@@ -143,8 +143,13 @@ class LLMService:
 
         joined_context = "\n\n".join(context_blocks)
 
+        from datetime import datetime
+        current_time_str = datetime.now().strftime("%A, %B %d, %Y")
+
         context_display = joined_context if context_chunks else "No relevant context found in the vault."
-        user_prompt = f"""Retrieved Knowledge Context:
+        user_prompt = f"""Current Date: {current_time_str}
+
+Retrieved Knowledge Context:
 -----------------------
 {context_display}
 -----------------------
