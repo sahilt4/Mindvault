@@ -686,11 +686,15 @@ def create_vector_store() -> BaseVectorStore:
     vtype = (settings.VECTOR_DB_TYPE or "").lower()
 
     if vtype == "pinecone" or (not vtype and settings.PINECONE_API_KEY):
-        try:
-            print("[VectorStore Factory] Initializing Pinecone Cloud Vector Store...")
+        print("[VectorStore Factory] Initializing Pinecone Cloud Vector Store...")
+        if vtype == "pinecone":
+            # If explicitly requested, do not catch exceptions so they appear in logs
             return PineconeVectorStore()
-        except Exception as e:
-            print(f"[VectorStore Factory Warning] Failed to initialize Pinecone ({e}), falling back to ChromaDB")
+        else:
+            try:
+                return PineconeVectorStore()
+            except Exception as e:
+                print(f"[VectorStore Factory Warning] Failed to initialize Pinecone ({e}), falling back to ChromaDB")
 
     elif vtype == "qdrant" or (not vtype and settings.QDRANT_URL and settings.QDRANT_API_KEY):
         try:
