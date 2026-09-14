@@ -1,0 +1,65 @@
+# Render Blueprint Specification for MindVault
+# https://render.com/docs/blueprint-spec
+
+services:
+  # ----------------------------------------------------------------------------
+  # 1. Node.js Express Backend API
+  # ----------------------------------------------------------------------------
+  - type: web
+    name: mindvault-backend
+    runtime: node
+    plan: free
+    region: oregon
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: AI_SERVICE_URL
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+
+  # ----------------------------------------------------------------------------
+  # 2. Python FastAPI AI & RAG Microservice
+  # ----------------------------------------------------------------------------
+  - type: web
+    name: mindvault-ai
+    runtime: python
+    plan: free
+    region: oregon
+    rootDir: ai-service
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: LLM_PROVIDER
+        value: gemini
+      - key: LLM_API_KEY
+        sync: false
+      - key: LLM_MODEL_NAME
+        value: gemini-1.5-flash
+      - key: EMBEDDING_PROVIDER
+        value: gemini
+      - key: EMBEDDING_API_KEY
+        sync: false
+      - key: EMBEDDING_MODEL_NAME
+        value: models/text-embedding-004
+      - key: VECTOR_DB_TYPE
+        value: pinecone
+      - key: PINECONE_API_KEY
+        sync: false
+      - key: PINECONE_INDEX_NAME
+        value: mindvault
+      - key: PINECONE_ENVIRONMENT
+        value: us-east-1
+      - key: TOP_K
+        value: "5"
