@@ -177,7 +177,7 @@ class ChromaVectorStore(BaseVectorStore):
                 include=["embeddings"],
                 limit=1
             )
-            if results and results.get("embeddings") and len(results["embeddings"]) > 0:
+            if results and results.get("embeddings") is not None and len(results["embeddings"]) > 0:
                 return results["embeddings"][0]
         except Exception as e:
             print(f"[Chroma get_document_embedding Error]: {e}")
@@ -190,7 +190,7 @@ class ChromaVectorStore(BaseVectorStore):
         top_k: int = 5
     ) -> List[Dict[str, Any]]:
         query_vec = self.get_document_embedding(document_id, user_id)
-        if not query_vec:
+        if query_vec is None or len(query_vec) == 0:
             return []
 
         filter_cond = {
@@ -409,7 +409,7 @@ class PineconeVectorStore(BaseVectorStore):
         top_k: int = 5
     ) -> List[Dict[str, Any]]:
         query_vec = self.get_document_embedding(document_id, user_id)
-        if not query_vec:
+        if query_vec is None or len(query_vec) == 0:
             return []
 
         res = self.index.query(
@@ -618,7 +618,7 @@ class QdrantVectorStore(BaseVectorStore):
         from qdrant_client.models import Filter, FieldCondition, MatchValue
 
         query_vec = self.get_document_embedding(document_id, user_id)
-        if not query_vec:
+        if query_vec is None or len(query_vec) == 0:
             return []
 
         search_res = self.client.search(
