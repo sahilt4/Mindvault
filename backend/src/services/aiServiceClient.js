@@ -9,8 +9,8 @@ const getAiServiceUrl = () => {
 export const aiServiceClient = {
   async checkHealth() {
     try {
-      // 25s timeout accommodates free tier cold-starts (e.g. Render spin-up)
-      const response = await axios.get(`${getAiServiceUrl()}/health`, { timeout: 25000 });
+      // 60s timeout accommodates free tier cold-starts (e.g. Render spin-up)
+      const response = await axios.get(`${getAiServiceUrl()}/health`, { timeout: 60000 });
       return response.data;
     } catch (error) {
       return { status: 'offline', error: error.message };

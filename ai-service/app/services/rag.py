@@ -33,7 +33,7 @@ class RAGPipeline:
         )
 
         # 4. Check if answer indicates information not found
-        is_not_found = "could not find" in answer.lower() or "not mentioned in your stored" in answer.lower() or "not in their vault" in answer.lower() or "not contained in the context" in answer.lower()
+        is_not_found = "could not find" in answer.lower() or "not mentioned in your stored" in answer.lower() or "not in their vault" in answer.lower() or "not contained in the context" in answer.lower() or "not in your vault" in answer.lower()
 
         # 5. Format source citations (Consolidated by Document)
         sources: List[Dict[str, Any]] = []
