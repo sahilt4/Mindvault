@@ -161,7 +161,14 @@ For factual questions, answer accurately using ONLY the retrieved knowledge abov
         # Gemini
         if self.provider == "gemini" and self.api_key:
             try:
-                response = self._gemini_model.generate_content(user_prompt)
+                contents = []
+                if conversation_history:
+                    for msg in conversation_history[-4:]:
+                        role = "user" if msg.get("role") == "user" else "model"
+                        contents.append({"role": role, "parts": [msg.get("content", "")]})
+                contents.append({"role": "user", "parts": [user_prompt]})
+                
+                response = self._gemini_model.generate_content(contents)
                 if response and response.text:
                     return response.text.strip()
             except Exception as e:
